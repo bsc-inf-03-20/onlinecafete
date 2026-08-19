@@ -15,13 +15,21 @@
           </div>
         </div>
         <div class="topbar-actions">
-          <a class="pill" href="/docs/cafeteria-api-design.md">Blueprint</a>
-          <a class="pill" href="/docs/cafeteria-api-spec.md">Route Map</a>
-          <a class="pill accent" href="/docs/cafeteria-api-openapi.yaml">API Contract</a>
+          <a class="pill" href="#overview">What it does</a>
+          <a class="pill" href="#core-flows">How to use it</a>
+          <a class="pill" href="#preview">Preview</a>
+          <a class="pill accent" href="#docs">Developer docs</a>
         </div>
       </header>
 
-      <section class="hero">
+      <section class="hero" id="overview">
+        <div class="hero-background" aria-hidden="true">
+          <video class="hero-bg-video" autoplay muted loop playsinline poster="/media/cafeteria-promo.png">
+            <source src="/media/cafeteria-intro.mp4" type="video/mp4" />
+          </video>
+          <div class="hero-bg-overlay"></div>
+        </div>
+
         <div class="hero-copy">
           <p class="eyebrow">NestJS + MongoDB</p>
           <h1>Build a cafeteria experience people actually want to use.</h1>
@@ -31,8 +39,10 @@
           </p>
 
           <div class="actions">
-            <a class="button primary" href="/docs/cafeteria-api-spec.md">Explore the Route Map</a>
-            <a class="button secondary" href="/docs/cafeteria-api-openapi.yaml">Open the Contract</a>
+            <a class="button primary" href="#core-flows">See the Endpoints</a>
+            <a class="button secondary" href="#api-contract">
+              See the API File
+            </a>
           </div>
 
           <div class="meta-grid">
@@ -58,10 +68,10 @@
           </div>
           <h2>Everything needed to launch the first version</h2>
           <ul class="feature-list">
-            <li>Clear account, menu, order, payment, and delivery flows</li>
-            <li>Route definitions that make frontend integration simple</li>
+            <li>Simple account, menu, order, payment, and delivery flows</li>
+            <li>Clear endpoint names that make frontend integration simple</li>
             <li>Shared DTOs, enums, and schemas to keep data consistent</li>
-            <li>Live docs served from <code>/docs</code> for quick reference</li>
+            <li>Docs served from <code>/docs</code> for quick reference</li>
           </ul>
 
           <div class="code-window">
@@ -75,10 +85,15 @@ POST /api/menu/items
 POST /api/orders
 POST /api/payments/initialize</code></pre>
           </div>
+
+          <figure class="hero-art">
+            <img src="/media/cafeteria-promo.png" alt="Cafeteria API preview image" />
+            <figcaption>Image preview of the cafeteria API experience.</figcaption>
+          </figure>
         </aside>
       </section>
 
-      <section class="section">
+      <section class="section" id="core-flows">
         <div class="section-heading">
           <h2>Core flows</h2>
           <p>The routes that turn a cafe visit into a smooth digital experience.</p>
@@ -86,25 +101,25 @@ POST /api/payments/initialize</code></pre>
 
         <div class="route-grid">
           <article class="route-card">
-            <span>Accounts</span>
+            <span>Create account</span>
             <code>POST /api/auth/register</code>
             <code>POST /api/auth/login</code>
             <code>GET /api/auth/me</code>
           </article>
           <article class="route-card">
-            <span>Menu</span>
+            <span>Browse menu</span>
             <code>GET /api/menu/items</code>
             <code>POST /api/menu/items</code>
             <code>GET /api/menu/categories</code>
           </article>
           <article class="route-card">
-            <span>Checkout</span>
+            <span>Place order</span>
             <code>POST /api/orders</code>
             <code>GET /api/orders</code>
             <code>PATCH /api/orders/:id/status</code>
           </article>
           <article class="route-card">
-            <span>Delivery</span>
+            <span>Track delivery</span>
             <code>POST /api/deliveries/assign</code>
             <code>GET /api/deliveries</code>
             <code>PATCH /api/deliveries/:id/status</code>
@@ -112,17 +127,65 @@ POST /api/payments/initialize</code></pre>
         </div>
       </section>
 
-      <section class="section callout">
-        <div class="callout-copy">
-          <h2>Docs that make implementation easier</h2>
-          <p>
-            Use the blueprint to understand the product, the route map to build against it, and
-            the API contract to wire tools and clients without guesswork.
-          </p>
+      <section class="section" id="preview">
+        <div class="section-heading">
+          <h2>Visual preview</h2>
+          <p>The picture gives users a fast summary without needing to press play.</p>
         </div>
-        <div class="actions">
-          <a class="button primary" href="/docs/cafeteria-api-design.md">Open Blueprint</a>
-          <a class="button secondary" href="/docs/cafeteria-api-spec.md">Open Route Map</a>
+
+        <div class="preview-card">
+          <img
+            class="showcase-image"
+            src="/media/cafeteria-promo.png"
+            alt="Cafeteria API promotional preview"
+          />
+          <div class="preview-copy">
+            <span class="badge">Preview</span>
+            <h3>What the platform feels like</h3>
+            <p>
+              The image shows the product story in one glance: a modern cafeteria flow with
+              menu browsing, orders, payment success, and delivery tracking.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="docs">
+        <div class="section-heading">
+          <h2>Developer docs</h2>
+          <p>Everything explained on the same page, in plain language.</p>
+        </div>
+
+        <div class="doc-grid">
+          <article class="doc-card">
+            <span>Overview</span>
+            <h3>What the API is for</h3>
+            <p>
+              This part explains the product shape: users sign in, browse food, place orders,
+              pay, and follow delivery progress.
+            </p>
+            <a class="doc-link" href="#overview">Jump to overview</a>
+          </article>
+          <article class="doc-card">
+            <span>Endpoints</span>
+            <h3>What builders will call</h3>
+            <p>
+              These are the routes your frontend, tests, or API client will use to interact with
+              the system.
+            </p>
+            <a class="doc-link" href="#core-flows">Jump to endpoint list</a>
+          </article>
+          <article class="doc-card" id="api-contract">
+            <span>API Contract</span>
+            <h3>How tools understand the API</h3>
+            <p>
+              The contract is the machine-readable version of the routes. It helps tools and
+              client apps know what to send and expect back.
+            </p>
+            <pre><code>openapi: 3.0.3
+servers:
+  - url: http://localhost:3000/api</code></pre>
+          </article>
         </div>
       </section>
     </div>

@@ -6,5 +6,6 @@ describe('Landing page', () => {
     const html = readFileSync(join(process.cwd(), 'public', 'index.html'), 'utf8');
     expect(html).toContain('<title>Online Cafeteria API</title>');
     expect(html).toContain('Build a cafeteria experience people actually want to use.');
+    expect(html).toContain('Visual preview');
   });
 });
