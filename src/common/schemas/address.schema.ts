@@ -19,6 +19,12 @@ export class Address {
 
   @Prop({ trim: true, default: 'South Africa' })
   country?: string;
+
+  @Prop({ trim: true, default: '' })
+  label?: string;
+
+  @Prop({ default: false })
+  isDefault?: boolean;
 }
 
 export const AddressSchema = SchemaFactory.createForClass(Address);

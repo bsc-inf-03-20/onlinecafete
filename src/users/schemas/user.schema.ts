@@ -13,11 +13,17 @@ export class User {
   @Prop({ required: true, unique: true, lowercase: true, trim: true })
   email: string;
 
-  @Prop({ required: true, select: false })
-  passwordHash: string;
+  @Prop({ select: false })
+  passwordHash?: string;
 
   @Prop({ trim: true, default: '' })
   phone?: string;
+
+  @Prop({ trim: true, default: '' })
+  avatarUrl?: string;
+
+  @Prop({ type: [String], default: [] })
+  dietaryPreferences: string[];
 
   @Prop({ enum: Object.values(UserRole), default: UserRole.Customer })
   role: UserRole;

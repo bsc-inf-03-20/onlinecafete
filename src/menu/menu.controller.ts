@@ -1,5 +1,18 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { UserRole } from '../common/enums/user-role.enum';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CreateMenuItemDto } from './dto/create-menu-item.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -16,11 +29,15 @@ export class MenuController {
   }
 
   @Post('categories')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin)
   createCategory(@Body() createCategoryDto: CreateCategoryDto) {
     return this.menuService.createCategory(createCategoryDto);
   }
 
   @Patch('categories/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin)
   updateCategory(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,
@@ -39,11 +56,15 @@ export class MenuController {
   }
 
   @Post('items')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin)
   createItem(@Body() createMenuItemDto: CreateMenuItemDto) {
     return this.menuService.createItem(createMenuItemDto);
   }
 
   @Patch('items/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin)
   updateItem(
     @Param('id') id: string,
     @Body() updateMenuItemDto: UpdateMenuItemDto,
@@ -52,6 +73,8 @@ export class MenuController {
   }
 
   @Delete('items/:id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.Admin)
   removeItem(@Param('id') id: string) {
     return this.menuService.removeItem(id);
   }

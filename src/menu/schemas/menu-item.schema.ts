@@ -18,7 +18,12 @@ export class MenuItem {
   @Prop({ trim: true, default: '' })
   imageUrl?: string;
 
-  @Prop({ type: Types.ObjectId, ref: Category.name, required: true, index: true })
+  @Prop({
+    type: Types.ObjectId,
+    ref: Category.name,
+    required: true,
+    index: true,
+  })
   categoryId: Types.ObjectId;
 
   @Prop({ default: true })

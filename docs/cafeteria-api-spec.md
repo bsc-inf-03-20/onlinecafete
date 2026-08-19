@@ -166,6 +166,14 @@ Errors:
 
 ## Users Routes
 
+### `GET /api/users`
+
+List customer profiles.
+
+Auth:
+
+- required bearer token
+
 ### `GET /api/users/me`
 
 Return profile details for the current user.
@@ -183,7 +191,20 @@ Request body:
 ```json
 {
   "fullName": "Jane A. Doe",
-  "phone": "+27123456789"
+  "phone": "+27123456789",
+  "avatarUrl": "https://example.com/new-avatar.jpg",
+  "dietaryPreferences": ["vegetarian"],
+  "addresses": [
+    {
+      "label": "Home",
+      "line1": "12 Main Road",
+      "city": "Johannesburg",
+      "province": "Gauteng",
+      "postalCode": "2000",
+      "country": "South Africa",
+      "isDefault": true
+    }
+  ]
 }
 ```
 
@@ -191,6 +212,7 @@ Rules:
 
 - only editable fields may be sent
 - unknown fields are rejected
+- required bearer token
 
 Success response `200`:
 
@@ -200,22 +222,22 @@ Success response `200`:
   "fullName": "Jane A. Doe",
   "email": "jane@example.com",
   "phone": "+27123456789",
+  "avatarUrl": "https://example.com/new-avatar.jpg",
+  "dietaryPreferences": ["vegetarian"],
   "role": "customer"
 }
 ```
 
 ### `GET /api/users/:id`
 
-Admin-only route to fetch a user by ID.
+Fetch a customer profile by ID.
 
 Auth:
 
 - required bearer token
-- admin role only
 
 Errors:
 
-- `403` insufficient role
 - `404` user not found
 
 ## Menu Routes
