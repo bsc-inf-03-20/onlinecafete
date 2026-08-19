@@ -1,0 +1,847 @@
+openapi: 3.0.3
+info:
+  title: Online Cafeteria API
+  version: 0.1.0
+  description: Planned REST contract for the online cafeteria backend.
+servers:
+  - url: http://localhost:3000/api
+tags:
+  - name: Auth
+  - name: Users
+  - name: Menu
+  - name: Orders
+  - name: Payments
+  - name: Deliveries
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Register a new customer account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterAuthRequest'
+      responses:
+        '201':
+          description: Registered successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthResponse'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Log in and receive a bearer token
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginAuthRequest'
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /auth/logout:
+    post:
+      tags: [Auth]
+      summary: Log out the current user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logged out
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+  /auth/me:
+    get:
+      tags: [Auth]
+      summary: Get the current authenticated user
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Current user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+  /users/me:
+    get:
+      tags: [Users]
+      summary: Get current user profile
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+    patch:
+      tags: [Users]
+      summary: Update current user profile
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUserRequest'
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /users/{id}:
+    get:
+      tags: [Users]
+      summary: Get a user by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: User
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /menu/categories:
+    get:
+      tags: [Menu]
+      summary: List menu categories
+      responses:
+        '200':
+          description: Category list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+    post:
+      tags: [Menu]
+      summary: Create a category
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateCategoryRequest'
+      responses:
+        '201':
+          description: Created category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  /menu/categories/{id}:
+    patch:
+      tags: [Menu]
+      summary: Update a category
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateCategoryRequest'
+      responses:
+        '200':
+          description: Updated category
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+  /menu/items:
+    get:
+      tags: [Menu]
+      summary: List menu items
+      responses:
+        '200':
+          description: Menu items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuItem'
+    post:
+      tags: [Menu]
+      summary: Create a menu item
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateMenuItemRequest'
+      responses:
+        '201':
+          description: Created menu item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+  /menu/items/{id}:
+    get:
+      tags: [Menu]
+      summary: Get a menu item
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Menu item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+    patch:
+      tags: [Menu]
+      summary: Update a menu item
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateMenuItemRequest'
+      responses:
+        '200':
+          description: Updated menu item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuItem'
+    delete:
+      tags: [Menu]
+      summary: Delete or disable a menu item
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Deleted menu item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+  /orders:
+    post:
+      tags: [Orders]
+      summary: Create a new order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderRequest'
+      responses:
+        '201':
+          description: Created order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+    get:
+      tags: [Orders]
+      summary: List orders
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Order list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Order'
+  /orders/{id}:
+    get:
+      tags: [Orders]
+      summary: Get an order by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /orders/{id}/cancel:
+    patch:
+      tags: [Orders]
+      summary: Cancel an order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Cancelled order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /orders/{id}/status:
+    patch:
+      tags: [Orders]
+      summary: Update order status
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateOrderStatusRequest'
+      responses:
+        '200':
+          description: Updated order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Order'
+  /payments/initialize:
+    post:
+      tags: [Payments]
+      summary: Initialize a payment
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InitializePaymentRequest'
+      responses:
+        '201':
+          description: Payment initialized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+  /payments/webhook:
+    post:
+      tags: [Payments]
+      summary: Handle payment provider webhook
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: true
+      responses:
+        '200':
+          description: Webhook processed
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MessageResponse'
+  /payments/{id}:
+    get:
+      tags: [Payments]
+      summary: Get payment details
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Payment
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+  /deliveries/assign:
+    post:
+      tags: [Deliveries]
+      summary: Assign a driver to an order
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AssignDeliveryRequest'
+      responses:
+        '201':
+          description: Delivery assigned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+  /deliveries:
+    get:
+      tags: [Deliveries]
+      summary: List deliveries
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Delivery list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Delivery'
+  /deliveries/{id}:
+    get:
+      tags: [Deliveries]
+      summary: Get a delivery by id
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+  /deliveries/{id}/status:
+    patch:
+      tags: [Deliveries]
+      summary: Update delivery status
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateDeliveryStatusRequest'
+      responses:
+        '200':
+          description: Updated delivery
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delivery'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    IdParam:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  responses:
+    BadRequest:
+      description: Validation error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Forbidden:
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    Conflict:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        message:
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        error:
+          type: string
+      required: [statusCode, message, error]
+    MessageResponse:
+      type: object
+      properties:
+        message:
+          type: string
+      required: [message]
+    Address:
+      type: object
+      properties:
+        line1:
+          type: string
+        line2:
+          type: string
+        city:
+          type: string
+        province:
+          type: string
+        postalCode:
+          type: string
+        country:
+          type: string
+      required: [line1, city, province, postalCode]
+    RegisterAuthRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        phone:
+          type: string
+      required: [fullName, email, password]
+    LoginAuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required: [email, password]
+    AuthResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        token:
+          type: string
+      required: [id, fullName, email, role, token]
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: '#/components/schemas/User'
+      required: [token, user]
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        fullName:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        role:
+          type: string
+          enum: [customer, admin, delivery]
+        isActive:
+          type: boolean
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+      required: [id, fullName, email, role]
+    UpdateUserRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        phone:
+          type: string
+        isActive:
+          type: boolean
+        addresses:
+          type: array
+          items:
+            $ref: '#/components/schemas/Address'
+    CreateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+      required: [name]
+    UpdateCategoryRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        isActive:
+          type: boolean
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        isActive:
+          type: boolean
+      required: [id, name, slug, isActive]
+    CreateMenuItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        categoryId:
+          type: string
+        isAvailable:
+          type: boolean
+        prepTimeMinutes:
+          type: integer
+      required: [name, price, categoryId]
+    UpdateMenuItemRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        categoryId:
+          type: string
+        isAvailable:
+          type: boolean
+        prepTimeMinutes:
+          type: integer
+    MenuItem:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        imageUrl:
+          type: string
+        categoryId:
+          type: string
+        isAvailable:
+          type: boolean
+        prepTimeMinutes:
+          type: integer
+      required: [id, name, price, categoryId, isAvailable]
+    CreateOrderItem:
+      type: object
+      properties:
+        menuItemId:
+          type: string
+        quantity:
+          type: integer
+      required: [menuItemId, quantity]
+    CreateOrderRequest:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/CreateOrderItem'
+        deliveryAddress:
+          $ref: '#/components/schemas/Address'
+        notes:
+          type: string
+      required: [items, deliveryAddress]
+    OrderItem:
+      type: object
+      properties:
+        menuItemId:
+          type: string
+        nameSnapshot:
+          type: string
+        unitPriceSnapshot:
+          type: number
+        quantity:
+          type: integer
+        lineTotal:
+          type: number
+      required: [menuItemId, nameSnapshot, unitPriceSnapshot, quantity, lineTotal]
+    Order:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        orderNumber:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrderItem'
+        subtotal:
+          type: number
+        deliveryFee:
+          type: number
+        tax:
+          type: number
+        total:
+          type: number
+        status:
+          type: string
+          enum: [draft, pending, confirmed, preparing, ready_for_delivery, out_for_delivery, delivered, cancelled]
+        paymentStatus:
+          type: string
+          enum: [unpaid, pending, paid, failed, refunded]
+        deliveryStatus:
+          type: string
+          enum: [not_assigned, assigned, picked_up, in_transit, delivered, failed]
+        deliveryAddress:
+          $ref: '#/components/schemas/Address'
+        notes:
+          type: string
+      required: [id, userId, orderNumber, items, subtotal, deliveryFee, tax, total, status, paymentStatus, deliveryStatus, deliveryAddress]
+    UpdateOrderStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [draft, pending, confirmed, preparing, ready_for_delivery, out_for_delivery, delivered, cancelled]
+      required: [status]
+    InitializePaymentRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+        method:
+          type: string
+          enum: [card, mobile_money, cash]
+      required: [orderId, method]
+    Payment:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        provider:
+          type: string
+        providerReference:
+          type: string
+        amount:
+          type: number
+        currency:
+          type: string
+        status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+      required: [id, orderId, amount, currency, status]
+    AssignDeliveryRequest:
+      type: object
+      properties:
+        orderId:
+          type: string
+        driverId:
+          type: string
+      required: [orderId, driverId]
+    UpdateDeliveryStatusRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [not_assigned, assigned, picked_up, in_transit, delivered, failed]
+      required: [status]
+    Delivery:
+      type: object
+      properties:
+        id:
+          type: string
+        orderId:
+          type: string
+        driverId:
+          type: string
+        status:
+          type: string
+          enum: [not_assigned, assigned, picked_up, in_transit, delivered, failed]
+        assignedAt:
+          type: string
+          format: date-time
+        pickedUpAt:
+          type: string
+          format: date-time
+        deliveredAt:
+          type: string
+          format: date-time
+        trackingNotes:
+          type: string
+      required: [id, orderId, status]

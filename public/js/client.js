@@ -17,7 +17,15 @@ const apiFetch = async (url, method, body) => {
 };
 
 const initTodo = () => {
-  // INSERT handleTodoDelete HERE
+  const handleTodoDelete = (id) => {
+    const doDelete = async () => {
+      await apiFetch(`/todos/${id}`, 'DELETE');
+      refreshList();
+    };
+
+    doDelete().catch((err) => console.log('Error deleting todo', err));
+  };
+  window.handleTodoDelete = handleTodoDelete;
 
   const renderTitle = ({ title, done }) => {
     if (!done) return title;
@@ -35,7 +43,14 @@ const initTodo = () => {
             <div style="flex-grow: 1;">
                 ${renderTitle({ title, done })}
             </div>
-            <!-- INSERT DELETE BUTTON HERE -->
+            <button
+                type="button"
+                class="btn btn-link btn-sm text-danger px-2"
+                aria-label="Delete task"
+                onclick="handleTodoDelete('${_id}')"
+            >
+                <i class="fas fa-trash"></i>
+            </button>
         </li>
     `;
   const noItems = `

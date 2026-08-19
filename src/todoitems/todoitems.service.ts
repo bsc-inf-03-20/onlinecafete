@@ -1,6 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model } from 'mongoose';
+import { Model, Types } from 'mongoose';
 
 import { CreateTodoitemDto } from './dto/create-todoitem.dto';
 import { UpdateTodoitemDto } from './dto/update-todoitem.dto';
@@ -13,64 +17,59 @@ export class TodoitemsService {
     private readonly todoItemModel: Model<TodoItemDocument>,
   ) {}
 
+  private ensureValidId(id: string) {
+    if (!id || !Types.ObjectId.isValid(id)) {
+      throw new BadRequestException('Invalid todo id');
+    }
+  }
+
   async create(createTodoitemDto: CreateTodoitemDto): Promise<TodoItem> {
     return this.todoItemModel.create(createTodoitemDto);
   }
 
   async findAll(): Promise<TodoItem[]> {
-    return this.todoItemModel.find().exec();
+    return this.todoItemModel.find().sort({ createdAt: -1 }).exec();
   }
 
   async findOne(id: string): Promise<TodoItem> {
-    return this.todoItemModel.findOne({ _id: id }).exec();
+    this.ensureValidId(id);
+
+    const todoItem = await this.todoItemModel.findById(id).exec();
+    if (!todoItem) {
+      throw new NotFoundException(`Todo item with id "${id}" not found`);
+    }
+
+    return todoItem;
   }
 
   async update(
     id: string,
     updateTodoitemDto: UpdateTodoitemDto,
   ): Promise<TodoItem> {
-    return this.todoItemModel
-      .findOneAndUpdate({ _id: id }, updateTodoitemDto, {
-        returnDocument: 'after',
+    this.ensureValidId(id);
+
+    const todoItem = await this.todoItemModel
+      .findByIdAndUpdate(id, updateTodoitemDto, {
+        new: true,
+        runValidators: true,
       })
       .exec();
+
+    if (!todoItem) {
+      throw new NotFoundException(`Todo item with id "${id}" not found`);
+    }
+
+    return todoItem;
   }
 
   async remove(id: string): Promise<TodoItem> {
-    const deleted = await this.todoItemModel
-      .findByIdAndRemove({ _id: id })
-      .exec();
-    return deleted;
-  }
+    this.ensureValidId(id);
 
-  // REMOVE TODO ITEMS BEGIN
-  async onApplicationBootstrap() {
-    const prepop = [
-      {
-        _id: 'feedfacefeedfacefeedface',
-        title:
-          '<a href="http://adaptable.io/docs/starters/nestjs-mongo-starter#idea-2-deploy-a-code-update">Deploy a code update</a> by removing the banner message',
-        done: false,
-      },
-      {
-        _id: 'beeffeedbeeffeedbeeffeed',
-        title:
-          '<a href="https://adaptable.io/docs/starters/nestjs-mongo-starter#idea-3-start-building-your-app-by-adding-more-api-services">Customize this app</a> by adding an API service to delete To Do items',
-        done: false,
-      },
-    ];
-
-    for (const i of prepop) {
-      try {
-        await this.create(i);
-      } catch (err) {
-        if (err.code !== 11000) {
-          throw new Error(
-            `Error creating prepopulated item ${i._id}: ${err.message}`,
-          );
-        }
-      }
+    const todoItem = await this.todoItemModel.findByIdAndDelete(id).exec();
+    if (!todoItem) {
+      throw new NotFoundException(`Todo item with id "${id}" not found`);
     }
+
+    return todoItem;
   }
-  // REMOVE TODO ITEMS END
 }

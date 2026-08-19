@@ -1,101 +1,68 @@
-# NestJS + Mongoose + MongoDB Starter Template
+# onlinecafete
 
-This is a template for a simple To Do List web app that consists of a REST API and a simple front end UI.
+This is a NestJS app backed by Mongoose and a local MongoDB instance.
 
-<p align="center"><img src="screenshot.png" width="90%" /></p>
+## What you need
 
-The app uses [NextJS](https://nextjs.com) as the foundation that provides the REST API back end and also serves the static front end.
-[Mongoose](https://mongoosejs.com) is used to define the data model and interfaces to the [MongoDB](https://mongodb.com) database.
+- Node.js
+- MongoDB running locally on `127.0.0.1:27017`
 
-## Using this Starter Template
+## Local setup
 
-This repo can be used as an [Adaptable.io](https://adaptable.io) Starter.
-For instructions on using this repo as a template and deploying to the Adaptable Cloud in just a few clicks, check out the [Starter Guide](https://adaptable.io/docs/starters/nestjs-mongo-starter).
-
-## Running a local dev environment
-
-All of the following instructions assume you are in the repo root directory.
-
-### 1. Install Node.js modules
+1. Start MongoDB locally:
 
 ```console
-yarn
+npm run mongo-start
 ```
 
-### 2. Run MongoDB locally
-
-The app requires a database to store the data for the REST API.
-You can run a MongoDB cluster on your local development system if you have Docker installed.
-
-To run a MongoDB cluster using Docker:
+2. Install dependencies:
 
 ```console
-yarn run mongo-start
+npm install
 ```
 
-To later stop the MongoDB cluster:
-
-> **WARNING**: All data stored in the local cluster will be deleted when the container is stopped.
-> For information on persisting the database data, see [the MongoDB Docker README](https://github.com/docker-library/docs/blob/master/mongo/README.md#where-to-store-data).
+3. Start the API:
 
 ```console
-yarn run mongo-stop
+npm run start:dev
 ```
 
-### 3. Start the app (watch mode)
+4. Open the browser UI:
 
-```console
-yarn run start:dev
+```text
+http://localhost:3000
 ```
 
-> **NOTE**: By default, the app listens on port 3000. To use a different port, set the `PORT` environment variable to the desired port number.
+The app uses this connection by default:
 
-### 4. Connect to your app
-
-Use a web browser to connect to [http://localhost:3000](http://localhost:3000)
-
-## Running in production
-
-### 1. Set DATABASE_URL
-
-The app uses the environment variable `DATABASE_URL` to connect to your MongoDB instance.
-Ensure that `DATABASE_URL` is set to the URL for your MongoDB cluster.
-
-### 2. Build
-
-```console
-yarn run build
+```text
+mongodb://127.0.0.1:27017/onlinecafete
 ```
 
-### 3. Run
+If you want to use a different MongoDB server, set `DATABASE_URL` before starting the app.
 
-```console
-yarn run start
-```
+## Handy scripts
 
-## Testing
+- `npm run mongo-start` starts a local MongoDB container on port `27017`
+- `npm run mongo-stop` removes the local MongoDB container
+- `npm run start:dev` starts the NestJS API with live reload
+- `npm run build` compiles the API for production
 
-```console
-# unit tests
-yarn run test
+## API Design Docs
 
-# e2e tests
-yarn run test:e2e
+- [Cafeteria API design](docs/cafeteria-api-design.md)
+- [Cafeteria API spec](docs/cafeteria-api-spec.md)
+- [Cafeteria OpenAPI contract](docs/cafeteria-api-openapi.yaml)
 
-# test coverage
-yarn run test:cov
-```
+## API
 
-## Source Code
+- `GET /todos`
+- `GET /todos/:id`
+- `POST /todos`
+- `PATCH /todos/:id`
+- `DELETE /todos/:id`
 
-### REST API (back end)
+## Notes
 
-This project follows the NestJS conventions for file and directory structure.
-The implementation of the `/todos` REST API endpoint can be found in `src/todoitems/`.
-
-### Web UI (front end)
-
-The layout and static portions of the front end can be found in `public/index.html`
-The dynamic part of the front end is in `public/js/client.js`.
-
-<p align="center"><a href="https://adaptable.io"><img src="https://adaptable.io/img/color lockup.svg" height="50px" alt="Adaptable.io" /></a></p>
+- The front end is served from `public/`
+- The database name is `onlinecafete`
