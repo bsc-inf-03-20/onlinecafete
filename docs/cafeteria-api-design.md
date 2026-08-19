@@ -350,7 +350,7 @@ Suggested values:
 
 ### Phase 1
 
-- Replace the current todo domain with auth, users, menu items, and orders.
+- Replace the starter demo with auth, users, menu items, and orders.
 - Add shared utilities for validation, error handling, and response shaping.
 - Create the main Mongo schemas and DTOs.
 

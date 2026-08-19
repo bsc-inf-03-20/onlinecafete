@@ -20,7 +20,8 @@ describe('AppController (e2e)', () => {
       .get('/')
       .expect(200)
       .expect((res) => {
-        expect(res.text).toContain('<title>To Do App</title>');
+        expect(res.text).toContain('<title>Online Cafeteria API</title>');
+        expect(res.text).toContain('Online Cafeteria API');
       });
   });
 });

@@ -1,50 +1,130 @@
 <html>
   <head>
-    <title>To Do App</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-    />
+    <title>Online Cafeteria API</title>
     <link rel="stylesheet" href="/stylesheets/style.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.css"
-    />
   </head>
 
   <body>
-    <h1 class="text-center mt-4" id="todo">NestJS + MongoDB</h1>
-    <h2 class="text-center mb-4">To Do List</h2>
+    <div class="page-shell">
+      <header class="topbar">
+        <div class="brand">
+          <span class="brand-mark"></span>
+          <div>
+            <strong>Online Cafeteria API</strong>
+            <p>One backend for menus, orders, payments, and delivery.</p>
+          </div>
+        </div>
+        <div class="topbar-actions">
+          <a class="pill" href="/docs/cafeteria-api-design.md">Blueprint</a>
+          <a class="pill" href="/docs/cafeteria-api-spec.md">Route Map</a>
+          <a class="pill accent" href="/docs/cafeteria-api-openapi.yaml">API Contract</a>
+        </div>
+      </header>
 
-    <section style="background-color: rgb(4 0 255 / 6%);">
-      <div class="container-lg p-5">
-        <div class="row d-flex justify-content-center align-items-center">
-          <div class="col col-xl-10">
-            <div class="card">
-              <div class="card-body p-5">
-                <form
-                  class="d-flex justify-content-center align-items-center mb-4"
-                  id="todo-form"
-                >
-                  <div class="form-outline flex-fill">
-                    <input type="text" id="add-input" class="form-control" />
-                    <label class="form-label" for="add-input">New task...</label>
-                  </div>
-                  <button type="submit" class="btn btn-info ms-2">Add</button>
-                </form>
+      <section class="hero">
+        <div class="hero-copy">
+          <p class="eyebrow">NestJS + MongoDB</p>
+          <h1>Build a cafeteria experience people actually want to use.</h1>
+          <p class="lede">
+            A clean REST API for user accounts, menu browsing, checkout, payments, and delivery
+            updates. Designed to help you ship faster and keep the whole food flow in one place.
+          </p>
 
-                <ul class="list-group mb-0" id="todo-list"></ul>
-              </div>
+          <div class="actions">
+            <a class="button primary" href="/docs/cafeteria-api-spec.md">Explore the Route Map</a>
+            <a class="button secondary" href="/docs/cafeteria-api-openapi.yaml">Open the Contract</a>
+          </div>
+
+          <div class="meta-grid">
+            <div class="meta-card">
+              <span class="meta-label">Gateway</span>
+              <strong>/api</strong>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">Stack</span>
+              <strong>MongoDB</strong>
+            </div>
+            <div class="meta-card">
+              <span class="meta-label">Readiness</span>
+              <strong>Blueprint ready</strong>
             </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <script
-      type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/4.0.0/mdb.min.js"
-    ></script>
-    <script type="text/javascript" src="../js/client.js"></script>
+        <aside class="panel">
+          <div class="panel-header">
+            <span class="status-dot"></span>
+            <span>What builders get</span>
+          </div>
+          <h2>Everything needed to launch the first version</h2>
+          <ul class="feature-list">
+            <li>Clear account, menu, order, payment, and delivery flows</li>
+            <li>Route definitions that make frontend integration simple</li>
+            <li>Shared DTOs, enums, and schemas to keep data consistent</li>
+            <li>Live docs served from <code>/docs</code> for quick reference</li>
+          </ul>
+
+          <div class="code-window">
+            <div class="code-window-bar">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+            <pre><code>POST /api/auth/register
+POST /api/menu/items
+POST /api/orders
+POST /api/payments/initialize</code></pre>
+          </div>
+        </aside>
+      </section>
+
+      <section class="section">
+        <div class="section-heading">
+          <h2>Core flows</h2>
+          <p>The routes that turn a cafe visit into a smooth digital experience.</p>
+        </div>
+
+        <div class="route-grid">
+          <article class="route-card">
+            <span>Accounts</span>
+            <code>POST /api/auth/register</code>
+            <code>POST /api/auth/login</code>
+            <code>GET /api/auth/me</code>
+          </article>
+          <article class="route-card">
+            <span>Menu</span>
+            <code>GET /api/menu/items</code>
+            <code>POST /api/menu/items</code>
+            <code>GET /api/menu/categories</code>
+          </article>
+          <article class="route-card">
+            <span>Checkout</span>
+            <code>POST /api/orders</code>
+            <code>GET /api/orders</code>
+            <code>PATCH /api/orders/:id/status</code>
+          </article>
+          <article class="route-card">
+            <span>Delivery</span>
+            <code>POST /api/deliveries/assign</code>
+            <code>GET /api/deliveries</code>
+            <code>PATCH /api/deliveries/:id/status</code>
+          </article>
+        </div>
+      </section>
+
+      <section class="section callout">
+        <div class="callout-copy">
+          <h2>Docs that make implementation easier</h2>
+          <p>
+            Use the blueprint to understand the product, the route map to build against it, and
+            the API contract to wire tools and clients without guesswork.
+          </p>
+        </div>
+        <div class="actions">
+          <a class="button primary" href="/docs/cafeteria-api-design.md">Open Blueprint</a>
+          <a class="button secondary" href="/docs/cafeteria-api-spec.md">Open Route Map</a>
+        </div>
+      </section>
+    </div>
   </body>
 </html>

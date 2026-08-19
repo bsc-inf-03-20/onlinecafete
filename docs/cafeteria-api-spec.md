@@ -603,4 +603,4 @@ These are not separate modules yet, but the following capabilities should be rol
 ## Notes
 
 - This spec is intentionally route-first so implementation can follow endpoint by endpoint.
-- The current todo feature should eventually be replaced by the cafeteria modules above.
+- The starter demo has been replaced by the cafeteria modules above.

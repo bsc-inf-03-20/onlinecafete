@@ -6,7 +6,6 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
 import { OrdersModule } from './orders/orders.module';
-import { TodoitemsModule } from './todoitems/todoitems.module';
 import { UsersModule } from './users/users.module';
 
 const databaseUrl =
@@ -18,11 +17,14 @@ const databaseUrl =
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'public'),
     }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'docs'),
+      serveRoot: '/docs',
+    }),
     AuthModule,
     UsersModule,
     MenuModule,
     OrdersModule,
-    TodoitemsModule,
   ],
   controllers: [],
   providers: [],

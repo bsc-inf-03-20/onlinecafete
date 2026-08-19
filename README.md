@@ -1,6 +1,6 @@
 # onlinecafete
 
-This is a NestJS app backed by Mongoose and a local MongoDB instance.
+This repository is being turned into an Online Cafeteria API built with NestJS and MongoDB.
 
 ## What you need
 
@@ -54,15 +54,7 @@ If you want to use a different MongoDB server, set `DATABASE_URL` before startin
 - [Cafeteria API spec](docs/cafeteria-api-spec.md)
 - [Cafeteria OpenAPI contract](docs/cafeteria-api-openapi.yaml)
 
-## API
-
-- `GET /todos`
-- `GET /todos/:id`
-- `POST /todos`
-- `PATCH /todos/:id`
-- `DELETE /todos/:id`
-
 ## Notes
 
-- The front end is served from `public/`
+- The front end is now a lightweight API landing page served from `public/`
 - The database name is `onlinecafete`
