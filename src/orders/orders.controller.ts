@@ -1,38 +1,110 @@
-import { Body, Controller, Get, Param, Patch, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiCreatedResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
+import { CurrentUser } from '../auth/current-user.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { Roles } from '../auth/roles.decorator';
+import { RolesGuard } from '../auth/roles.guard';
+import { JwtPayload } from '../auth/types/jwt-payload.type';
+import { UserRole } from '../common/enums/user-role.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrdersService } from './orders.service';
+import { SwaggerOrderModel } from '../swagger/api-models';
 
 @Controller('orders')
+@UseGuards(JwtAuthGuard)
+@ApiTags('Orders')
+@ApiBearerAuth()
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
+  @ApiOperation({
+    summary: 'Create order',
+    description: 'Create a real order from menu item ids and server-calculated totals.',
+  })
+  @ApiCreatedResponse({
+    description: 'Order created successfully.',
+    type: SwaggerOrderModel,
+  })
+  create(
+    @CurrentUser() user: JwtPayload,
+    @Body() createOrderDto: CreateOrderDto,
+  ) {
+    return this.ordersService.create(user, createOrderDto);
   }
 
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  @ApiOperation({
+    summary: 'List orders',
+    description: 'Return the signed-in customer orders or all orders for admin users.',
+  })
+  @ApiOkResponse({
+    description: 'Orders list.',
+    type: SwaggerOrderModel,
+    isArray: true,
+  })
+  findAll(@CurrentUser() user: JwtPayload) {
+    return this.ordersService.findAll(user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(id);
+  @ApiOperation({
+    summary: 'Get order',
+    description: 'Fetch one order by id, respecting owner and admin access.',
+  })
+  @ApiOkResponse({
+    description: 'Order details.',
+    type: SwaggerOrderModel,
+  })
+  findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.ordersService.findOne(id, user);
   }
 
   @Patch(':id/cancel')
-  cancel(@Param('id') id: string) {
-    return this.ordersService.cancel(id);
+  @ApiOperation({
+    summary: 'Cancel order',
+    description: 'Cancel an order while it is still in a cancellable state.',
+  })
+  @ApiOkResponse({
+    description: 'Cancelled order.',
+    type: SwaggerOrderModel,
+  })
+  cancel(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.ordersService.cancel(id, user);
   }
 
   @Patch(':id/status')
+  @UseGuards(RolesGuard)
+  @Roles(UserRole.Admin)
+  @ApiOperation({
+    summary: 'Update order status',
+    description: 'Advance the order through the kitchen and delivery workflow.',
+  })
+  @ApiOkResponse({
+    description: 'Updated order.',
+    type: SwaggerOrderModel,
+  })
   updateStatus(
     @Param('id') id: string,
+    @CurrentUser() user: JwtPayload,
     @Body() updateOrderStatusDto: UpdateOrderStatusDto,
   ) {
-    return this.ordersService.updateStatus(id, updateOrderStatusDto);
+    return this.ordersService.updateStatus(id, user, updateOrderStatusDto);
   }
 }

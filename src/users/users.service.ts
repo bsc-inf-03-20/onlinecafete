@@ -59,9 +59,9 @@ export class UsersService {
     };
   }
 
-  private toPublicUser(user: UserDocument | (User & { _id?: string })): PublicUser {
+  private toPublicUser(user: any): PublicUser {
     const plain = 'toObject' in user ? user.toObject() : { ...user };
-    const { _id, passwordHash, __v, ...safeUser } = plain as {
+    const { _id, passwordHash, ...safeUser } = plain as {
       _id?: string;
       passwordHash?: string;
       __v?: number;
@@ -81,7 +81,7 @@ export class UsersService {
     passwordHash: string,
   ): Promise<PublicUser> {
     try {
-      const createdUser = await this.userModel.create({
+      const createPayload: any = {
         ...createCustomerProfileDto,
         passwordHash,
         role: UserRole.Customer,
@@ -89,7 +89,10 @@ export class UsersService {
         addresses: createCustomerProfileDto.addresses?.map((address) =>
           this.normalizeAddress(address),
         ),
-      });
+      };
+      const createdUser = (await (this.userModel as any).create(
+        createPayload,
+      )) as UserDocument | (User & { _id?: string });
 
       return this.toPublicUser(createdUser);
     } catch (err) {
@@ -108,7 +111,7 @@ export class UsersService {
       .select('-passwordHash')
       .exec();
 
-    return users.map((user) => this.toPublicUser(user));
+    return users.map((user: any) => this.toPublicUser(user));
   }
 
   async findByEmail(email: string, includePassword = false) {

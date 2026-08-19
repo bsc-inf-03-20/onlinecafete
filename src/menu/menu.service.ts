@@ -59,11 +59,9 @@ export class MenuService {
       .replace(/^-+|-+$/g, '');
   }
 
-  private toPublicCategory(
-    category: CategoryDocument | (Category & { _id?: string }),
-  ): PublicCategory {
+  private toPublicCategory(category: any): PublicCategory {
     const plain = 'toObject' in category ? category.toObject() : { ...category };
-    const { _id, __v, ...safeCategory } = plain as {
+    const { _id, ...safeCategory } = plain as {
       _id?: string;
       __v?: number;
       [key: string]: unknown;
@@ -75,11 +73,9 @@ export class MenuService {
     } as PublicCategory;
   }
 
-  private toPublicMenuItem(
-    menuItem: MenuItemDocument | (MenuItem & { _id?: string }),
-  ): PublicMenuItem {
+  private toPublicMenuItem(menuItem: any): PublicMenuItem {
     const plain = 'toObject' in menuItem ? menuItem.toObject() : { ...menuItem };
-    const { _id, __v, ...safeMenuItem } = plain as {
+    const { _id, ...safeMenuItem } = plain as {
       _id?: string;
       __v?: number;
       [key: string]: unknown;
@@ -112,7 +108,7 @@ export class MenuService {
       .sort({ name: 1 })
       .exec();
 
-    return categories.map((category) => this.toPublicCategory(category));
+    return categories.map((category: any) => this.toPublicCategory(category));
   }
 
   async createCategory(
@@ -170,7 +166,7 @@ export class MenuService {
       .sort({ createdAt: -1 })
       .exec();
 
-    return menuItems.map((menuItem) => this.toPublicMenuItem(menuItem));
+    return menuItems.map((menuItem: any) => this.toPublicMenuItem(menuItem));
   }
 
   async findItem(id: string): Promise<PublicMenuItem> {
