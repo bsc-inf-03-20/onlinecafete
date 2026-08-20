@@ -74,22 +74,24 @@ export class OrdersService {
     };
   }
 
-  private toPublicOrder(order: any): PublicOrder {
+  private toPublicOrder(order: OrderDocument | (Order & { _id?: string })) {
     const plain = 'toObject' in order ? order.toObject() : { ...order };
-    const { _id, ...safeOrder } = plain as {
+    const { _id, __v, ...safeOrder } = plain as {
       _id?: string;
       __v?: number;
       [key: string]: unknown;
     };
 
     const items = Array.isArray((safeOrder as { items?: unknown }).items)
-      ? ((safeOrder as { items?: PublicOrderItem[] }).items || []).map((item) => ({
-          menuItemId: String(item.menuItemId),
-          nameSnapshot: item.nameSnapshot,
-          unitPriceSnapshot: item.unitPriceSnapshot,
-          quantity: item.quantity,
-          lineTotal: item.lineTotal,
-        }))
+      ? ((safeOrder as { items?: PublicOrderItem[] }).items || []).map(
+          (item) => ({
+            menuItemId: String(item.menuItemId),
+            nameSnapshot: item.nameSnapshot,
+            unitPriceSnapshot: item.unitPriceSnapshot,
+            quantity: item.quantity,
+            lineTotal: item.lineTotal,
+          }),
+        )
       : [];
 
     return {
@@ -98,25 +100,30 @@ export class OrdersService {
       orderNumber: String((safeOrder as { orderNumber?: unknown }).orderNumber),
       items,
       subtotal: Number((safeOrder as { subtotal?: unknown }).subtotal || 0),
-      deliveryFee: Number((safeOrder as { deliveryFee?: unknown }).deliveryFee || 0),
+      deliveryFee: Number(
+        (safeOrder as { deliveryFee?: unknown }).deliveryFee || 0,
+      ),
       tax: Number((safeOrder as { tax?: unknown }).tax || 0),
       total: Number((safeOrder as { total?: unknown }).total || 0),
       status: (safeOrder as { status: OrderStatus }).status,
-      paymentStatus: (safeOrder as { paymentStatus: PaymentStatus }).paymentStatus,
-      deliveryStatus: (safeOrder as { deliveryStatus: DeliveryStatus }).deliveryStatus,
-      deliveryAddress: (safeOrder as { deliveryAddress?: Record<string, unknown> })
-        .deliveryAddress || {},
+      paymentStatus: (safeOrder as { paymentStatus: PaymentStatus })
+        .paymentStatus,
+      deliveryStatus: (safeOrder as { deliveryStatus: DeliveryStatus })
+        .deliveryStatus,
+      deliveryAddress:
+        (safeOrder as { deliveryAddress?: Record<string, unknown> })
+          .deliveryAddress || {},
       notes: (safeOrder as { notes?: string }).notes,
       createdAt: (safeOrder as { createdAt?: Date }).createdAt,
       updatedAt: (safeOrder as { updatedAt?: Date }).updatedAt,
     } as PublicOrder;
   }
 
-  private isOrderOwner(order: any, userId: string) {
+  private isOrderOwner(order: OrderDocument | Order, userId: string) {
     return String(order.userId) === String(userId);
   }
 
-  private ensureCanViewOrder(order: any, currentUser: JwtPayload) {
+  private ensureCanViewOrder(order: OrderDocument, currentUser: JwtPayload) {
     if (
       currentUser.role !== UserRole.Admin &&
       !this.isOrderOwner(order, currentUser.sub)
@@ -125,7 +132,7 @@ export class OrdersService {
     }
   }
 
-  private ensureCanManageOrder(order: any, currentUser: JwtPayload) {
+  private ensureCanManageOrder(order: OrderDocument, currentUser: JwtPayload) {
     if (
       currentUser.role !== UserRole.Admin &&
       !this.isOrderOwner(order, currentUser.sub)
@@ -139,7 +146,7 @@ export class OrdersService {
   }
 
   private canTransition(from: OrderStatus, to: OrderStatus) {
-    const allowed: Partial<Record<OrderStatus, OrderStatus[]>> = {
+    const allowed: Record<OrderStatus, OrderStatus[]> = {
       [OrderStatus.Draft]: [OrderStatus.Pending, OrderStatus.Cancelled],
       [OrderStatus.Pending]: [OrderStatus.Confirmed, OrderStatus.Cancelled],
       [OrderStatus.Confirmed]: [OrderStatus.Preparing, OrderStatus.Cancelled],
@@ -215,9 +222,7 @@ export class OrdersService {
 
     const orderItems = await this.resolveMenuItems(createOrderDto.items);
     const subtotal = Number(
-      orderItems
-        .reduce((total, item) => total + item.lineTotal, 0)
-        .toFixed(2),
+      orderItems.reduce((total, item) => total + item.lineTotal, 0).toFixed(2),
     );
     const tax = Number((subtotal * TAX_RATE).toFixed(2));
     const deliveryFee = DELIVERY_FEE;
@@ -239,7 +244,7 @@ export class OrdersService {
       notes: createOrderDto.notes || '',
     });
 
-    return this.toPublicOrder(createdOrder);
+    return this.toPublicOrder(createdOrder as any);
   }
 
   async findAll(currentUser: JwtPayload) {
@@ -257,7 +262,7 @@ export class OrdersService {
   async findOne(id: string, currentUser: JwtPayload) {
     this.ensureValidId(id, 'order id');
 
-    const order = await this.orderModel.findById(id).exec();
+    const order: any = await this.orderModel.findById(id).exec();
     if (!order) {
       throw new NotFoundException(`Order with id "${id}" not found`);
     }
@@ -269,7 +274,7 @@ export class OrdersService {
   async cancel(id: string, currentUser: JwtPayload) {
     this.ensureValidId(id, 'order id');
 
-    const order = await this.orderModel.findById(id).exec();
+    const order: any = await this.orderModel.findById(id).exec();
     if (!order) {
       throw new NotFoundException(`Order with id "${id}" not found`);
     }
@@ -298,7 +303,7 @@ export class OrdersService {
   ) {
     this.ensureValidId(id, 'order id');
 
-    const order = await this.orderModel.findById(id).exec();
+    const order: any = await this.orderModel.findById(id).exec();
     if (!order) {
       throw new NotFoundException(`Order with id "${id}" not found`);
     }

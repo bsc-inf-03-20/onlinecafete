@@ -5,6 +5,7 @@ import { join } from 'path';
 
 import { AuthModule } from './auth/auth.module';
 import { MenuModule } from './menu/menu.module';
+import { PaymentsModule } from './payments/payments.module';
 import { OrdersModule } from './orders/orders.module';
 import { UsersModule } from './users/users.module';
 
@@ -25,6 +26,7 @@ const databaseUrl =
     UsersModule,
     MenuModule,
     OrdersModule,
+    PaymentsModule,
   ],
   controllers: [],
   providers: [],

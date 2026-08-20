@@ -25,13 +25,18 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderStatusDto } from './dto/update-order-status.dto';
 import { OrdersService } from './orders.service';
 import { SwaggerOrderModel } from '../swagger/api-models';
+import { PaymentsService } from '../payments/payments.service';
+import { SwaggerPaymentModel } from '../swagger/api-models';
 
 @Controller('orders')
 @UseGuards(JwtAuthGuard)
 @ApiTags('Orders')
 @ApiBearerAuth()
 export class OrdersController {
-  constructor(private readonly ordersService: OrdersService) {}
+  constructor(
+    private readonly ordersService: OrdersService,
+    private readonly paymentsService: PaymentsService,
+  ) {}
 
   @Post()
   @ApiOperation({
@@ -74,6 +79,19 @@ export class OrdersController {
   })
   findOne(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
     return this.ordersService.findOne(id, user);
+  }
+
+  @Get(':id/payment')
+  @ApiOperation({
+    summary: 'Get order payment',
+    description: 'Return the payment record attached to an order.',
+  })
+  @ApiOkResponse({
+    description: 'Payment record for the order.',
+    type: SwaggerPaymentModel,
+  })
+  findPayment(@Param('id') id: string, @CurrentUser() user: JwtPayload) {
+    return this.paymentsService.findByOrderId(id, user);
   }
 
   @Patch(':id/cancel')

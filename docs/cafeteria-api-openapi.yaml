@@ -305,6 +305,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Order'
+  /orders/{id}/payment:
+    get:
+      tags: [Orders]
+      summary: Get payment for an order
+      security:
+        - bearerAuth: []
+      parameters:
+        - $ref: '#/components/parameters/IdParam'
+      responses:
+        '200':
+          description: Payment for the order
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
   /orders/{id}/cancel:
     patch:
       tags: [Orders]
@@ -359,7 +374,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Payment'
+                $ref: '#/components/schemas/InitializePaymentResponse'
   /payments/webhook:
     post:
       tags: [Payments]
@@ -794,6 +809,11 @@ components:
           type: string
         orderId:
           type: string
+        userId:
+          type: string
+        method:
+          type: string
+          enum: [card, mobile_money, cash]
         provider:
           type: string
         providerReference:
@@ -805,7 +825,25 @@ components:
         status:
           type: string
           enum: [pending, paid, failed, refunded]
-      required: [id, orderId, amount, currency, status]
+      required: [id, orderId, userId, amount, currency, method, status]
+    InitializePaymentResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+        orderId:
+          type: string
+        status:
+          type: string
+          enum: [pending, paid, failed, refunded]
+        amount:
+          type: number
+        currency:
+          type: string
+        method:
+          type: string
+          enum: [card, mobile_money, cash]
+      required: [paymentId, orderId, status, amount, currency, method]
     AssignDeliveryRequest:
       type: object
       properties:

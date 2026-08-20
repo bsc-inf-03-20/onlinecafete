@@ -8,7 +8,10 @@ import {
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class AddressDto {
-  @ApiProperty({ example: '12 Main Road', description: 'Street address line 1.' })
+  @ApiProperty({
+    example: '12 Main Road',
+    description: 'Street address line 1.',
+  })
   @IsString()
   @IsNotEmpty()
   @Length(1, 120)
@@ -38,13 +41,19 @@ export class AddressDto {
   @Length(3, 12)
   postalCode: string;
 
-  @ApiPropertyOptional({ example: 'South Africa', description: 'Country name.' })
+  @ApiPropertyOptional({
+    example: 'South Africa',
+    description: 'Country name.',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 80)
   country?: string;
 
-  @ApiPropertyOptional({ example: 'Home', description: 'Label for the address.' })
+  @ApiPropertyOptional({
+    example: 'Home',
+    description: 'Label for the address.',
+  })
   @IsOptional()
   @IsString()
   @Length(1, 40)

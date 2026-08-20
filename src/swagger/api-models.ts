@@ -3,6 +3,7 @@ import { DeliveryStatus } from '../common/enums/delivery-status.enum';
 import { OrderStatus } from '../common/enums/order-status.enum';
 import { PaymentStatus } from '../common/enums/payment-status.enum';
 import { UserRole } from '../common/enums/user-role.enum';
+import { PaymentMethod } from '../common/enums/payment-method.enum';
 
 export class SwaggerAddressModel {
   @ApiProperty({ example: '12 Main Road' })
@@ -187,4 +188,59 @@ export class SwaggerOrderModel {
 
   @ApiPropertyOptional({ example: '2026-08-19T12:30:00.000Z' })
   updatedAt?: Date;
+}
+
+export class SwaggerPaymentModel {
+  @ApiProperty({ example: '66c2f1e3f1f1f1f1f1f1f1d' })
+  id: string;
+
+  @ApiProperty({ example: '66c2f1e3f1f1f1f1f1f1f1c' })
+  orderId: string;
+
+  @ApiProperty({ example: '66c2f1e3f1f1f1f1f1f1f1f1' })
+  userId: string;
+
+  @ApiProperty({ example: 150 })
+  amount: number;
+
+  @ApiProperty({ example: 'ZAR' })
+  currency: string;
+
+  @ApiProperty({ enum: PaymentMethod, example: PaymentMethod.Card })
+  method: PaymentMethod;
+
+  @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.Pending })
+  status: PaymentStatus;
+
+  @ApiPropertyOptional({ example: 'stripe' })
+  provider?: string;
+
+  @ApiPropertyOptional({ example: 'pay_123456' })
+  providerReference?: string;
+
+  @ApiPropertyOptional({ example: '2026-08-19T12:00:00.000Z' })
+  createdAt?: Date;
+
+  @ApiPropertyOptional({ example: '2026-08-19T12:30:00.000Z' })
+  updatedAt?: Date;
+}
+
+export class SwaggerInitializePaymentResponseModel {
+  @ApiProperty({ example: '66c2f1e3f1f1f1f1f1f1f1d' })
+  paymentId: string;
+
+  @ApiProperty({ example: '66c2f1e3f1f1f1f1f1f1f1c' })
+  orderId: string;
+
+  @ApiProperty({ enum: PaymentStatus, example: PaymentStatus.Pending })
+  status: PaymentStatus;
+
+  @ApiProperty({ example: 150 })
+  amount: number;
+
+  @ApiProperty({ example: 'ZAR' })
+  currency: string;
+
+  @ApiProperty({ enum: PaymentMethod, example: PaymentMethod.Card })
+  method: PaymentMethod;
 }

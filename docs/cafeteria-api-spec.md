@@ -518,6 +518,13 @@ Success response `201`:
 }
 ```
 
+Rules:
+
+- only the owner of the order or an admin can initialize payment
+- payment amount comes from the stored order total
+- the created payment record starts in `pending`
+- the linked order payment status is updated to `pending`
+
 ### `POST /api/payments/webhook`
 
 Payment provider callback endpoint.
@@ -527,12 +534,27 @@ Rules:
 - verify signature
 - update payment record
 - update related order payment status
+- when payment succeeds, the order payment status becomes `paid`
+- when payment succeeds for a pending order, the order status becomes `confirmed`
 
 ### `GET /api/payments/:id`
 
 Fetch payment details.
 
 Customers can only view their own payment records.
+
+### `GET /api/orders/:id/payment`
+
+Fetch the payment record attached to an order.
+
+Auth:
+
+- required bearer token
+
+Rules:
+
+- customers can only view their own payment records
+- admins can view any linked payment
 
 ## Delivery Routes
 
